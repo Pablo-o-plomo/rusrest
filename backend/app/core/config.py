@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     email_processed_folder: str = 'Processed'
     email_error_folder: str = 'Errors'
     uploads_dir: str = 'uploads'
+    admin_telegram_bot_token: str = ''
+    admin_telegram_chat_id: str = ''
 
     class Config:
         env_file = '.env'
