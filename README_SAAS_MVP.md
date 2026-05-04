@@ -23,11 +23,16 @@
 
 Открыть `http://localhost:3000`.
 
-## Railway
-### Frontend service
-- Start command: `./start.sh`
-- Env: `APP_TARGET=frontend`
+## Railway (важно)
+В вашем текущем деплое runtime — Python, поэтому `npm` недоступен (ошибка `exec: npm: не найден`).
 
-### Backend service (опционально для FastAPI из старой части репо)
-- Start command: `./start_backend.sh`
-- Env: `APP_TARGET=backend`
+### Если это Python сервис (текущий `rusrest`)
+- Оставьте `startCommand: ./start.sh`
+- По умолчанию `start.sh` запускает backend (`APP_TARGET=backend`)
+
+### Для веб-интерфейса Next.js
+Создайте **второй Railway service** с Node runtime:
+- Root: корень репозитория
+- Build command: `npm install && npm run build`
+- Start command: `APP_TARGET=frontend ./start.sh`
+- Или просто `npm run start`
