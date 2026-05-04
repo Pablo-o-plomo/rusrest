@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id        String   @id @default(cuid())
+  name      String
+  city      String
+  revenue   Float
+  laborCost Float
+  createdAt DateTime @default(now())
+  tasks     Task[]
+  metrics   Metric[]
+}
+
+model Task {
+  id           String     @id @default(cuid())
+  title        String
+  status       String
+  deadline     DateTime
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  createdAt    DateTime   @default(now())
+}
+
+model Metric {
+  id           String     @id @default(cuid())
+  name         String
+  value        Float
+  target       Float
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  createdAt    DateTime   @default(now())
+}
