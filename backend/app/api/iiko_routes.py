@@ -58,8 +58,8 @@ def dashboard_page(id:int, db:Session=Depends(get_db)):
     red_count=db.query(Alert).filter_by(restaurant_id=id,severity=AlertSeverity.red).count()
     yellow_count=db.query(Alert).filter_by(restaurant_id=id,severity=AlertSeverity.yellow).count()
 
-    imports_html=''.join([f"<tr><td>{x.created_at:%Y-%m-%d %H:%M}</td><td>{x.report_code or '-'}<\/td><td>{x.source}<\/td><td><span class='badge {x.status.value}'>{x.status.value}<\/span><\/td><td>{x.original_filename or '-'}<\/td><\/tr>" for x in imports]) or "<tr><td colspan='5'>Нет импортов<\/td><\/tr>"
-    alerts_html=''.join([f"<tr><td>{a.created_at:%Y-%m-%d %H:%M}</td><td><span class='badge {a.severity.value}'>{a.severity.value}<\/span><\/td><td>{a.title}<\/td><td>{a.message}<\/td><\/tr>" for a in alerts_items]) or "<tr><td colspan='4'>Нет алертов<\/td><\/tr>"
+    imports_html=''.join([f"<tr><td>{x.created_at:%Y-%m-%d %H:%M}</td><td>{x.report_code or '-'}</td><td>{x.source}</td><td><span class='badge {x.status.value}'>{x.status.value}</span></td><td>{x.original_filename or '-'}</td></tr>" for x in imports]) or "<tr><td colspan='5'>Нет импортов</td></tr>"
+    alerts_html=''.join([f"<tr><td>{a.created_at:%Y-%m-%d %H:%M}</td><td><span class='badge {a.severity.value}'>{a.severity.value}</span></td><td>{a.title}</td><td>{a.message}</td></tr>" for a in alerts_items]) or "<tr><td colspan='4'>Нет алертов</td></tr>"
 
     return f"""
     <!doctype html>
@@ -90,15 +90,15 @@ def dashboard_page(id:int, db:Session=Depends(get_db)):
         <div class='wrap'>
           <div class='head'>
             <h1>📊 Dashboard — {rest.name} ({rest.code})</h1>
-            <a href='/docs'>Swagger API<\/a>
+            <a href='/docs'>Swagger API</a>
           </div>
           <div class='cards'>
-            <div class='card'><div>Импортов всего</div><div class='num'>{total_imports}<\/div><\/div>
-            <div class='card'><div>Parsed</div><div class='num'>{parsed_count}<\/div><\/div>
-            <div class='card'><div>Failed</div><div class='num'>{failed_count}<\/div><\/div>
-            <div class='card'><div>Unknown</div><div class='num'>{unknown_count}<\/div><\/div>
-            <div class='card'><div>Red alerts</div><div class='num'>{red_count}<\/div><\/div>
-            <div class='card'><div>Yellow alerts</div><div class='num'>{yellow_count}<\/div><\/div>
+            <div class='card'><div>Импортов всего</div><div class='num'>{total_imports}</div></div>
+            <div class='card'><div>Parsed</div><div class='num'>{parsed_count}</div></div>
+            <div class='card'><div>Failed</div><div class='num'>{failed_count}</div></div>
+            <div class='card'><div>Unknown</div><div class='num'>{unknown_count}</div></div>
+            <div class='card'><div>Red alerts</div><div class='num'>{red_count}</div></div>
+            <div class='card'><div>Yellow alerts</div><div class='num'>{yellow_count}</div></div>
           </div>
 
           <div class='grid2'>
