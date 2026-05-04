@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { @apply bg-bg text-text; }
+.card { @apply bg-panel border border-slate-700 rounded-xl p-4; }
