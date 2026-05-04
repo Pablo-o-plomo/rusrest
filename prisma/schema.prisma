@@ -7,174 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum TaskStatus {
-  open
-  in_progress
-  waiting_review
-  closed
-  overdue
-}
-
-enum WorkflowNodeType {
-  Restaurant
-  TelegramBot
-  IikoReport
-  SalesReport
-  PurchaseReport
-  FoodCostMetric
-  LaborCostMetric
-  Inventory
-  Task
-  Employee
-  OwnerReport
-  Notification
-}
-
-model User {
-  id          String       @id @default(cuid())
-  email       String       @unique
-  name        String?
-  passwordHash String
-  restaurants Restaurant[]
-  employees   Employee[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-}
-
 model Restaurant {
-  id                String             @id @default(cuid())
-  name              String
-  ownerId           String
-  owner             User               @relation(fields: [ownerId], references: [id])
-  metrics           Metric[]
-  tasks             Task[]
-  employees         Employee[]
-  bots              Bot[]
-  reportSources     ReportSource[]
-  workflowNodes     WorkflowNode[]
-  workflowEdges     WorkflowEdge[]
-  notificationRules NotificationRule[]
-  deadlines         Deadline[]
-  dailyReports      DailyReport[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-}
-
-model Bot {
-  id           String     @id @default(cuid())
-  name         String
-  token        String
-  chatId       String?
-  isActive     Boolean    @default(true)
-  restaurantId String
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  createdAt    DateTime   @default(now())
-}
-
-model ReportSource {
-  id            String     @id @default(cuid())
-  type          String
-  provider      String
-  credentials   Json?
-  restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
-  createdAt     DateTime   @default(now())
-}
-
-model Metric {
-  id            String     @id @default(cuid())
-  name          String
-  value         Float
-  targetValue   Float
-  deviation     Float
-  updatedAt     DateTime
-  restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
-}
-
-model Employee {
-  id            String     @id @default(cuid())
-  name          String
-  role          String
-  telegramId    String?
-  userId        String?
-  user          User?      @relation(fields: [userId], references: [id])
-  restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
-  tasks         Task[]
+  id        String   @id @default(cuid())
+  name      String
+  city      String
+  revenue   Float
+  laborCost Float
+  createdAt DateTime @default(now())
+  tasks     Task[]
+  metrics   Metric[]
 }
 
 model Task {
-  id            String      @id @default(cuid())
-  title         String
-  description   String?
-  status        TaskStatus  @default(open)
-  source        String?
-  comments      Json?
-  restaurantId  String
-  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id])
-  assigneeId    String?
-  assignee      Employee?   @relation(fields: [assigneeId], references: [id])
-  deadlineId    String?
-  deadline      Deadline?   @relation(fields: [deadlineId], references: [id])
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id           String     @id @default(cuid())
+  title        String
+  status       String
+  deadline     DateTime
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  createdAt    DateTime   @default(now())
 }
 
-model WorkflowNode {
-  id            String            @id @default(cuid())
-  type          WorkflowNodeType
-  title         String
-  positionX     Float
-  positionY     Float
-  config        Json?
-  restaurantId  String
-  restaurant    Restaurant        @relation(fields: [restaurantId], references: [id])
-  fromEdges     WorkflowEdge[]    @relation("fromNode")
-  toEdges       WorkflowEdge[]    @relation("toNode")
-}
-
-model WorkflowEdge {
-  id            String        @id @default(cuid())
-  sourceNodeId  String
-  targetNodeId  String
-  label         String?
-  restaurantId  String
-  restaurant    Restaurant    @relation(fields: [restaurantId], references: [id])
-  sourceNode    WorkflowNode  @relation("fromNode", fields: [sourceNodeId], references: [id])
-  targetNode    WorkflowNode  @relation("toNode", fields: [targetNodeId], references: [id])
-}
-
-model NotificationRule {
-  id            String      @id @default(cuid())
-  name          String
-  condition     String
-  action        String
-  enabled       Boolean     @default(true)
-  restaurantId  String
-  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id])
-  createdAt     DateTime    @default(now())
-}
-
-model Deadline {
-  id            String      @id @default(cuid())
-  dueAt         DateTime
-  isCompleted   Boolean     @default(false)
-  restaurantId  String
-  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id])
-  tasks         Task[]
-}
-
-model DailyReport {
-  id            String      @id @default(cuid())
-  reportDate    DateTime
-  revenue       Float
-  avgCheck      Float
-  laborCostPct  Float
-  foodCostPct   Float
-  writeOffs     Float
-  openTasks     Int
-  overdueTasks  Int
-  restaurantId  String
-  restaurant    Restaurant  @relation(fields: [restaurantId], references: [id])
+model Metric {
+  id           String     @id @default(cuid())
+  name         String
+  value        Float
+  target       Float
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  createdAt    DateTime   @default(now())
 }

@@ -1,36 +1,33 @@
-# Restaurant Ops Map MVP
+# Restaurant Ops Dashboard MVP
 
-Next.js + TypeScript + Prisma/PostgreSQL приложение для визуального управления ресторанными процессами.
+Рабочий MVP на Next.js (App Router) + Prisma/PostgreSQL + Tailwind.
 
-## Структура
-- app/
-- components/
-- lib/
-- prisma/
-- services/
+## Что есть
+- Dashboard `/` с карточками ресторанов и цветом риска по ФОТ.
+- Restaurants `/restaurants` с формой добавления ресторана.
+- Restaurant Details `/restaurants/[id]` с метриками и задачами.
+- Tasks `/tasks` с таблицей статусов.
+- API routes:
+  - `GET/POST /api/restaurants`
+  - `GET/POST /api/tasks`
+  - `GET /api/metrics`
+- Автологика: при создании ресторана с `laborCost > 12` создается задача **"Снизить ФОТ"**.
 
-## Локальный запуск (frontend)
+## Быстрый старт
 1. `npm install`
-2. создать `.env` с `DATABASE_URL`
-3. `npx prisma generate`
-4. `npm run dev`
+2. Создать `.env`:
+   - `DATABASE_URL=postgresql://...`
+3. `npx prisma migrate dev --name init`
+4. `npx prisma generate`
+5. `npm run dev`
 
-## Railway деплой (рекомендуется 2 сервиса)
+Открыть `http://localhost:3000`.
 
-### 1) Frontend service (Next.js)
-- Root directory: корень репозитория
+## Railway
+### Frontend service
 - Start command: `./start.sh`
-- Environment variable: `APP_TARGET=frontend`
-- Public domain: включить
+- Env: `APP_TARGET=frontend`
 
-### 2) Backend service (FastAPI)
-- Root directory: корень репозитория (или `backend`, если создадите отдельный сервис из подпапки)
-- Start command: `./start_backend.sh` (или `./start.sh` + `APP_TARGET=backend`)
-- Public domain: включить при необходимости публичного API
-
-## Быстрый single-service режим
-Можно запускать через один `start.sh` и переключать `APP_TARGET`:
-- `APP_TARGET=frontend` → веб-интерфейс
-- `APP_TARGET=backend` → API
-
-> Для production рекомендуем два отдельных Railway service, чтобы UI и API были доступны одновременно.
+### Backend service (опционально для FastAPI из старой части репо)
+- Start command: `./start_backend.sh`
+- Env: `APP_TARGET=backend`
